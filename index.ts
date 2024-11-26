@@ -1,9 +1,13 @@
-import React from 'react'
+import express from "express";
+import dotenv from "dotenv";
 
-const index = () => {
-  return (
-    <div>index</div>
-  )
-}
+dotenv.config();
 
-export default index
+const bootServer = () => {
+  const app = express();
+
+  app.listen(process.env.PORT || 5000, () => {
+    console.log("Server is running");
+    
+  })
+};
