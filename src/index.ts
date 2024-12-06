@@ -10,12 +10,13 @@ const connectDB = async () => {
 
 connectDB()
   .then(() => console.log('Connected successfully to mongoDB'))
-  .then(() => bootServer())
+  .then(() => startServer())
   .catch((error) => {
     console.log(error)
+    console.log('Can not connect to mongoDB')
   })
 
-const bootServer = () => {
+const startServer = () => {
   const app = express()
 
   app.listen(process.env.PORT || 5000, () => {
