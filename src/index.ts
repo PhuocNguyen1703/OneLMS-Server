@@ -1,6 +1,8 @@
 import express from 'express'
+import cors from 'cors'
 import { connectDB } from './config/mongodb'
 import envConfig from './config/envConfig'
+import authRoute from '~/v1/routers/auth/auth.route'
 
 connectDB()
   .then(() => console.log('Connected successfully to mongoDB'))
@@ -13,7 +15,12 @@ connectDB()
 const startServer = () => {
   const app = express()
 
+  app.use(express.json())
+
+  //Routes
+  app.use('/v1/api/auth', authRoute)
+
   app.listen(envConfig.PORT || 5000, () => {
-    console.log('Server is running')
+    console.log(`Server is running at port ${envConfig.PORT}`)
   })
 }
