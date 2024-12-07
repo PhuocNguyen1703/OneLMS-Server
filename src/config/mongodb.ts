@@ -1,7 +1,7 @@
-import { MongoClient } from 'mongodb'
+import { Db, MongoClient } from 'mongodb'
 import envConfig from './envConfig'
 
-let dbInstance: unknown = null
+let dbInstance: Db
 const DB_NAME = 'OneLMS_DB'
 
 export const connectDB = async () => {
@@ -12,7 +12,7 @@ export const connectDB = async () => {
   dbInstance = client.db(DB_NAME)
 }
 
-export const getDB = () => {
+export const getDB = (): Db => {
   if (!dbInstance) throw new Error('Must connect to database first')
   return dbInstance
 }

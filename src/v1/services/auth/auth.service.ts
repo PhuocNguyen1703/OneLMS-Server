@@ -1,24 +1,36 @@
-import { Response } from 'express'
+import envConfig from '~/config/envConfig'
+import { authModel } from '~/v1/models/auth.model'
 import { loginBodyType } from '~/v1/types/auth.type'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-
-const generateAccessToken = (body: loginBodyType) => {
-  return jwt.sign(
-    {
-      email: body.email
-    },
-    'accessToken',
-    { expiresIn: '60s' }
-  )
-}
+import { comparePassword } from '~/v1/utils/crypto'
+import { generateToken, IPayload } from '~/v1/utils/generateToken'
 
 const login = async (body: loginBodyType) => {
-  const accessToken = generateAccessToken(body)
+  const { email } = body
 
-  const { password, ...others } = body
+  try {
+    const user = await authModel.login(email)
 
-  return { ...others, accessToken }
+    if (!user) {
+      throw 'Incorrect email.'
+    }
+
+    const validPassword = await comparePassword(body.password, user.password)
+    if (!validPassword) {
+      throw 'Incorrect password.'
+    }
+
+    if (user && validPassword) {
+      const payload: IPayload = { _id: user._id.toString(), email: user.email, role: user.role }
+      const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '10s')
+
+      user.accessToken = accessToken
+      delete user.password
+
+      return user
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const authService = { login }
