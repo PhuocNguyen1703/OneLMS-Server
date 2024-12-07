@@ -1,5 +1,4 @@
 import express from 'express'
-import cors from 'cors'
 import { connectDB } from './config/mongodb'
 import envConfig from './config/envConfig'
 import authRoute from '~/v1/routers/auth/auth.route'
@@ -16,6 +15,7 @@ const startServer = () => {
   const app = express()
 
   app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
 
   //Routes
   app.use('/v1/api/auth', authRoute)
