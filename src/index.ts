@@ -1,7 +1,7 @@
 import express from 'express'
 import { connectDB } from './config/mongodb'
 import envConfig from './config/envConfig'
-import authRoute from '~/v1/routers/auth/auth.route'
+import authRoute from '~/routers/auth/auth.route'
 
 connectDB()
   .then(() => console.log('Connected successfully to mongoDB'))
