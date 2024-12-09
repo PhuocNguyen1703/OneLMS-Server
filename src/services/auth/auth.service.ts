@@ -3,6 +3,7 @@ import envConfig from '~/config/envConfig'
 import { authModel } from '~/models/auth.model'
 import { loginBodyType, registerBodyType } from '~/types/auth.type'
 import { comparePassword, hashPassword } from '~/utils/crypto'
+import { EntityError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
 const register = async (body: registerBodyType) => {
@@ -28,12 +29,12 @@ const login = async (body: loginBodyType, res: Response) => {
     const user = await authModel.login(email)
 
     if (!user) {
-      throw 'Incorrect email.'
+      throw new EntityError([{ field: 'email', message: 'Incorrect email.' }])
     }
 
     const validPassword = comparePassword(body.password, user.password)
     if (!validPassword) {
-      throw 'Incorrect password.'
+      throw new EntityError([{ field: 'password', message: 'Incorrect email or password.' }])
     }
 
     if (user && validPassword) {
@@ -46,7 +47,7 @@ const login = async (body: loginBodyType, res: Response) => {
       return { data: { ...user }, message: 'Login successfully' }
     }
   } catch (error) {
-    throw { message: error }
+    throw { error }
   }
 }
 

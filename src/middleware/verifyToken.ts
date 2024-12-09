@@ -14,7 +14,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
       next()
     }
   } catch (error) {
-    res.status(StatusCodes.UNAUTHORIZED).json({ message: 'You are not authenticated', error })
+    res.status(StatusCodes.UNAUTHORIZED).json({ error, message: 'You are not authenticated' })
   }
 }
 

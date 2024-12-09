@@ -24,7 +24,7 @@ const login = async (email: string) => {
     const result = await getDB().collection(userCollectionName).find({ email: email }).toArray()
     return result[0]
   } catch (error) {
-    console.log(error)
+    throw { error }
   }
 }
 
