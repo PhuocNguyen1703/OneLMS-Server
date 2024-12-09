@@ -1,3 +1,4 @@
+import { Response } from 'express'
 import envConfig from '~/config/envConfig'
 import { authModel } from '~/models/auth.model'
 import { loginBodyType, registerBodyType } from '~/types/auth.type'
@@ -20,7 +21,7 @@ const register = async (body: registerBodyType) => {
   }
 }
 
-const login = async (body: loginBodyType) => {
+const login = async (body: loginBodyType, res: Response) => {
   const { email } = body
 
   try {
@@ -37,15 +38,15 @@ const login = async (body: loginBodyType) => {
 
     if (user && validPassword) {
       const payload: IPayload = { _id: user._id.toString(), email: user.email, role: user.role }
-      const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '10s')
+      const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '1d')
 
       user.accessToken = accessToken
       delete user.password
 
-      return user
+      return { data: { ...user }, message: 'Login successfully' }
     }
   } catch (error) {
-    console.log(error)
+    throw { message: error }
   }
 }
 

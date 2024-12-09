@@ -14,13 +14,10 @@ const register = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const result = await authService.login(req.body)
-    res.status(StatusCodes.OK).json({
-      data: { ...result },
-      message: 'Login successfully'
-    })
+    const result = await authService.login(req.body, res)
+    res.status(StatusCodes.OK).json(result)
   } catch (error) {
-    console.log(error)
+    res.status(StatusCodes.NOT_FOUND).json(error)
   }
 }
 

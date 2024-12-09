@@ -1,6 +1,7 @@
 import express from 'express'
 import { authController } from '~/controllers/auth.controller'
 import { validateData } from '~/middleware/validationMiddleware'
+import { authMiddleware } from '~/middleware/verifyToken'
 import { loginSchema, registerSchema } from '~/schemas/auth.schema'
 
 const router = express.Router()
