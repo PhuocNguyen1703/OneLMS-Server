@@ -6,9 +6,9 @@ const register = async (req: Request, res: Response) => {
   try {
     const result = await authService.register(req.body)
 
-    res.status(StatusCodes.OK).json(result)
+    res.status(StatusCodes.CREATED).json(result)
   } catch (error) {
-    console.log(error)
+    res.status(StatusCodes.BAD_REQUEST).json(error)
   }
 }
 

@@ -16,9 +16,9 @@ const register = async (body: registerBodyType) => {
   try {
     const newUser = await authModel.register(transformData)
 
-    return newUser
+    return { data: { ...newUser }, message: 'User register successfully.' }
   } catch (error) {
-    console.log(error)
+    throw { error }
   }
 }
 
@@ -39,7 +39,17 @@ const login = async (body: loginBodyType, res: Response) => {
 
     if (user && validPassword) {
       const payload: IPayload = { _id: user._id.toString(), email: user.email, role: user.role }
+
       const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '1d')
+      const refreshToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_REFRESH, '365d')
+      // refreshTokens.push(refreshToken)
+
+      // res.cookie('refreshToken', refreshToken, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   path: '/',
+      //   sameSite: 'none'
+      // })
 
       user.accessToken = accessToken
       delete user.password
