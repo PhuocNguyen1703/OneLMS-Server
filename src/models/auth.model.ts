@@ -1,7 +1,20 @@
 import { getDB } from '~/config/mongodb'
 import { registerBodyType } from '../types/auth.type'
+import { ObjectId } from 'mongodb'
 
 const userCollectionName: string = 'users'
+
+const findOneById = async (insertedId: string) => {
+  try {
+    const result = await getDB()
+      .collection(userCollectionName)
+      .findOne({ _id: new ObjectId(insertedId) })
+
+    return result
+  } catch (error) {
+    throw { error }
+  }
+}
 
 const register = async (data: registerBodyType) => {
   const { email } = data
@@ -28,4 +41,4 @@ const login = async (email: string) => {
   }
 }
 
-export const authModel = { register, login }
+export const authModel = { findOneById, register, login }

@@ -6,17 +6,26 @@ import { comparePassword, hashPassword } from '~/utils/crypto'
 import { EntityError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
+const optionUserSchemas = {
+  lastLogin: null,
+  isVerified: false,
+  createdAt: Date.now(),
+  updatedAt: null,
+  _destroy: false
+}
+
 const register = async (body: registerBodyType) => {
   const { password } = body
 
   const hashedPassword = hashPassword(password)
 
-  const transformData = { ...body, password: hashedPassword }
+  const transformData = { ...body, password: hashedPassword, ...optionUserSchemas }
 
   try {
     const newUser = await authModel.register(transformData)
+    const getNewUer = await authModel.findOneById(newUser.insertedId.toString())
 
-    return { data: { ...newUser }, message: 'User register successfully.' }
+    return { data: { ...getNewUer }, message: 'User register successfully.' }
   } catch (error) {
     throw { error }
   }
