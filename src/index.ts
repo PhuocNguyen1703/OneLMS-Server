@@ -2,6 +2,7 @@ import express from 'express'
 import { connectDB } from './config/mongodb'
 import envConfig from './config/envConfig'
 import authRoute from '~/routers/auth/auth.route'
+import cors from 'cors'
 
 connectDB()
   .then(() => console.log('Connected successfully to mongoDB'))
@@ -14,6 +15,7 @@ connectDB()
 const startServer = () => {
   const app = express()
 
+  app.use(cors())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
