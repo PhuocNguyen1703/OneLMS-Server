@@ -6,6 +6,8 @@ import { comparePassword, hashPassword } from '~/utils/crypto'
 import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
+const refreshTokens: string[] = []
+
 const optionUserSchemas = {
   lastLogin: null,
   isVerified: false,
@@ -31,7 +33,7 @@ const register = async (body: registerBodyType) => {
   }
 }
 
-const login = async (body: loginBodyType) => {
+const login = async (body: loginBodyType, res: Response) => {
   const { email } = body
 
   try {
@@ -47,11 +49,11 @@ const login = async (body: loginBodyType) => {
     }
 
     if (user && validPassword) {
-      if (!user?.isVerified) {
+      if (!user.isVerified) {
         throw new AuthError('Account has not been verified.')
       }
 
-      if (user?._destroy) {
+      if (user._destroy) {
         throw new ForbiddenError('Account has been locked.')
       }
 
@@ -59,14 +61,14 @@ const login = async (body: loginBodyType) => {
 
       const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '1d')
       const refreshToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_REFRESH, '365d')
-      // refreshTokens.push(refreshToken)
+      refreshTokens.push(refreshToken)
 
-      // res.cookie('refreshToken', refreshToken, {
-      //   httpOnly: true,
-      //   secure: false,
-      //   path: '/',
-      //   sameSite: 'none'
-      // })
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        sameSite: 'none'
+      })
 
       user.accessToken = accessToken
       delete user.password

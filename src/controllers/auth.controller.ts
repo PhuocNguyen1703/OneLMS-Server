@@ -15,7 +15,7 @@ const register = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
-    const result = await authService.login(req.body)
+    const result = await authService.login(req.body, res)
 
     res.status(StatusCodes.OK).json(result)
   } catch (error) {
