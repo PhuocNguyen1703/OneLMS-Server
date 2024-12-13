@@ -1,6 +1,7 @@
 import { getDB } from '~/config/mongodb'
 import { registerBodyType } from '../types/auth.type'
 import { ObjectId } from 'mongodb'
+import { EntityError } from '~/utils/errors'
 
 const userCollectionName: string = 'users'
 
@@ -12,7 +13,7 @@ const findOneById = async (insertedId: string) => {
 
     return result
   } catch (error) {
-    throw { error }
+    throw error as Error
   }
 }
 
@@ -22,13 +23,13 @@ const register = async (data: registerBodyType) => {
   try {
     const existUser = await getDB().collection(userCollectionName).find({ email: email }).toArray()
 
-    if (existUser?.length >= 1) throw 'User already exists'
+    if (existUser?.length >= 1) throw new EntityError([{ field: 'email', message: 'User already exists.' }])
 
     const newUser = await getDB().collection(userCollectionName).insertOne(data)
 
     return newUser
   } catch (error) {
-    throw { error }
+    throw error as Error
   }
 }
 
@@ -37,7 +38,7 @@ const login = async (email: string) => {
     const result = await getDB().collection(userCollectionName).find({ email: email }).toArray()
     return result[0]
   } catch (error) {
-    throw { error }
+    throw error as Error
   }
 }
 

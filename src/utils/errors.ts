@@ -22,3 +22,13 @@ export class ForbiddenError extends Error {
     super(message)
   }
 }
+
+export class CustomError extends Error {
+  status: number
+  constructor({ message, status }: { message: string; status: number }) {
+    super(message)
+    this.status = status
+  }
+}
+
+export const errorTypes = [EntityError, AuthError, ForbiddenError, CustomError]

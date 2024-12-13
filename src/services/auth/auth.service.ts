@@ -3,7 +3,7 @@ import envConfig from '~/config/envConfig'
 import { authModel } from '~/models/auth.model'
 import { loginBodyType, registerBodyType } from '~/types/auth.type'
 import { comparePassword, hashPassword } from '~/utils/crypto'
-import { EntityError } from '~/utils/errors'
+import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
 const optionUserSchemas = {
@@ -27,11 +27,11 @@ const register = async (body: registerBodyType) => {
 
     return { data: { ...getNewUer }, message: 'User register successfully.' }
   } catch (error) {
-    throw { error }
+    throw error as Error
   }
 }
 
-const login = async (body: loginBodyType, res: Response) => {
+const login = async (body: loginBodyType) => {
   const { email } = body
 
   try {
@@ -47,6 +47,14 @@ const login = async (body: loginBodyType, res: Response) => {
     }
 
     if (user && validPassword) {
+      if (!user?.isVerified) {
+        throw new AuthError('Account has not been verified.')
+      }
+
+      if (user?._destroy) {
+        throw new ForbiddenError('Account has been locked.')
+      }
+
       const payload: IPayload = { _id: user._id.toString(), email: user.email, role: user.role }
 
       const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '1d')
@@ -66,7 +74,7 @@ const login = async (body: loginBodyType, res: Response) => {
       return { data: { ...user }, message: 'Login successfully' }
     }
   } catch (error) {
-    throw { error }
+    throw error as Error
   }
 }
 

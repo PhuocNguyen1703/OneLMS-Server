@@ -14,6 +14,6 @@ export const registerSchema = z
 export const loginSchema = z
   .object({
     email: z.string().trim().email(),
-    password: z.string().trim().min(6).max(20)
+    password: z.string().trim().min(8).max(20)
   })
   .strict()
