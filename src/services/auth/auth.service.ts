@@ -8,23 +8,16 @@ import { generateToken, IPayload } from '~/utils/generateToken'
 
 const refreshTokens: string[] = []
 
-const optionUserSchemas = {
-  lastLogin: null,
-  isVerified: false,
-  createdAt: Date.now(),
-  updatedAt: null,
-  _destroy: false
-}
-
 const register = async (body: registerBodyType) => {
   const { password } = body
 
   const hashedPassword = hashPassword(password)
 
-  const transformData = { ...body, password: hashedPassword, ...optionUserSchemas }
+  const transformData = { ...body, password: hashedPassword, createdAt: Date.now() }
 
   try {
     const newUser = await authModel.register(transformData)
+
     const getNewUer = await authModel.findOneById(newUser.insertedId.toString())
 
     return { data: { ...getNewUer }, message: 'User register successfully.' }
