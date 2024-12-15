@@ -42,7 +42,7 @@ const login = async (body: loginBodyType, res: Response) => {
     }
 
     if (user && validPassword) {
-      if (!user.isVerified) {
+      if (!user.verify?.status) {
         throw new AuthError('Account has not been verified.')
       }
 

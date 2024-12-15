@@ -25,6 +25,7 @@ export const accountSchema = z.object({
       expired: z.date().nullable().default(null)
     })
     .default({ status: false, code: null, expired: null }),
+  last_login: z.number().nullable().default(null),
   createdAt: z.number(),
   updatedAt: z.number().nullable().default(null),
   _destroy: z.boolean().default(false)
