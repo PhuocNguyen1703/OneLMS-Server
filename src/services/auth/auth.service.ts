@@ -1,4 +1,5 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 import envConfig from '~/config/envConfig'
 import { authModel } from '~/models/auth.model'
 import { loginBodyType, registerBodyType } from '~/types/auth.type'
@@ -6,7 +7,7 @@ import { comparePassword, hashPassword } from '~/utils/crypto'
 import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
-const refreshTokens: string[] = []
+let refreshTokens: string[] = []
 
 const register = async (body: registerBodyType) => {
   const { password } = body
@@ -52,7 +53,7 @@ const login = async (body: loginBodyType, res: Response) => {
 
       const payload: IPayload = { _id: user._id.toString(), email: user.email, role: user.role }
 
-      const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '1d')
+      const accessToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_ACCESS, '10s')
       const refreshToken = await generateToken(payload, envConfig.JWT_SECRET_KEY_REFRESH, '365d')
       refreshTokens.push(refreshToken)
 
@@ -73,4 +74,14 @@ const login = async (body: loginBodyType, res: Response) => {
   }
 }
 
-export const authService = { register, login }
+const logout = async (req: Request, res: Response) => {
+  try {
+    refreshTokens = refreshTokens.filter((token) => token !== req?.cookies?.refreshToken)
+    res.clearCookie('refreshToken')
+    res.status(StatusCodes.OK).json('Logged out successfully.')
+  } catch (error) {
+    throw error as Error
+  }
+}
+
+export const authService = { register, login, logout }

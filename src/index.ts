@@ -3,6 +3,7 @@ import { connectDB } from './config/mongodb'
 import envConfig from './config/envConfig'
 import authRoute from '~/routers/auth/auth.route'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 connectDB()
   .then(() => console.log('Connected successfully to mongoDB'))
@@ -17,6 +18,7 @@ const startServer = () => {
 
   app.use(cors())
   app.use(express.json())
+  app.use(cookieParser())
   app.use(express.urlencoded({ extended: true }))
 
   //Routes

@@ -5,7 +5,7 @@ import envConfig from '~/config/envConfig'
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token: string = (req.headers?.token as string)?.split(' ')[1]
+    const token: string = (req.headers?.authorization as string)?.split(' ')[1]
 
     const decodedToken = jwt.verify(token, envConfig.JWT_SECRET_KEY_ACCESS)
 

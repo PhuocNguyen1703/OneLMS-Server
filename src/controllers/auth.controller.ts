@@ -28,4 +28,13 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
-export const authController = { register, login }
+const logout = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.logout(req, res)
+    return result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const authController = { register, login, logout }
