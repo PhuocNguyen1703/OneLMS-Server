@@ -3,7 +3,7 @@ import { GENDER, ROLE } from '~/constants'
 
 export const accountSchema = z.object({
   email: z.string().trim().email(),
-  password: z.string().trim(),
+  password: z.string().trim().min(8).max(20),
   first_name: z.string().trim().min(2).max(256),
   last_name: z.string().trim().min(2).max(256),
   role: z.enum(ROLE),
