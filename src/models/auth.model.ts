@@ -1,13 +1,13 @@
 import { ZodError } from 'zod'
 import { getDB } from '~/config/mongodb'
-import { registerBodyType } from '../types/auth.type'
+import { RegisterBodyType } from '../types/auth.type'
 import { ObjectId } from 'mongodb'
 import { EntityError } from '~/utils/errors'
 import { accountSchema } from '~/schemas/account.schema'
 
 const userCollectionName: string = 'users'
 
-const validateSchema = async (data: registerBodyType) => {
+const validateSchema = async (data: RegisterBodyType) => {
   try {
     return accountSchema.parse(data)
   } catch (error) {
@@ -27,7 +27,7 @@ const findOneById = async (insertedId: string) => {
   }
 }
 
-const register = async (data: registerBodyType) => {
+const register = async (data: RegisterBodyType) => {
   const { email } = data
 
   try {

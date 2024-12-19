@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { loginSchema, registerSchema } from '../schemas/auth.schema'
+import { LoginBody, RegisterBody } from '../schemas/auth.schema'
 
-export type registerBodyType = z.TypeOf<typeof registerSchema>
-export type loginBodyType = z.TypeOf<typeof loginSchema>
+export type RegisterBodyType = z.TypeOf<typeof RegisterBody>
+export type LoginBodyType = z.TypeOf<typeof LoginBody>

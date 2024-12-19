@@ -2,17 +2,17 @@ import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import envConfig from '~/config/envConfig'
 import { authModel } from '~/models/auth.model'
-import { loginBodyType, registerBodyType } from '~/types/auth.type'
+import { LoginBodyType, RegisterBodyType } from '~/types/auth.type'
 import { comparePassword, hashPassword } from '~/utils/crypto'
 import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { generateToken, IPayload } from '~/utils/generateToken'
 
 let refreshTokens: string[] = []
 
-const register = async (body: registerBodyType) => {
+const register = async (body: RegisterBodyType) => {
   const { password } = body
 
-  const hashedPassword = hashPassword(password)
+  const hashedPassword = hashPassword(password as string)
 
   const transformData = { ...body, password: hashedPassword, createdAt: Date.now() }
 
@@ -27,7 +27,7 @@ const register = async (body: registerBodyType) => {
   }
 }
 
-const login = async (body: loginBodyType, res: Response) => {
+const login = async (body: LoginBodyType, res: Response) => {
   const { email } = body
 
   try {

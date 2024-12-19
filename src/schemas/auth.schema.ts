@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { ROLE } from '~/constants'
 
-export const registerSchema = z
+export const RegisterBody = z
   .object({
     first_name: z.string().trim().min(2).max(256),
     last_name: z.string().trim().min(2).max(256),
@@ -11,7 +11,7 @@ export const registerSchema = z
   })
   .strict()
 
-export const loginSchema = z
+export const LoginBody = z
   .object({
     email: z.string().trim().email(),
     password: z.string().trim().min(8).max(20)
