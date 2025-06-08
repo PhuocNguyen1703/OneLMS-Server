@@ -19,7 +19,9 @@ const configSchema = z.object({
   PORT: z.coerce.number().default(5000),
   MONGO_DB: z.string(),
   JWT_SECRET_KEY_ACCESS: z.string(),
-  JWT_SECRET_KEY_REFRESH: z.string()
+  JWT_SECRET_KEY_REFRESH: z.string(),
+  EMAIL_USER: z.string(),
+  EMAIL_PASS: z.string()
 })
 
 const configServer = configSchema.safeParse(process.env)

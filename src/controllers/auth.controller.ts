@@ -2,12 +2,27 @@ import { Request, Response } from 'express'
 import { authService } from '../services/auth/auth.service'
 import { StatusCodes } from 'http-status-codes'
 import { errorTypes } from '~/utils/errors'
+import { sendEmail } from '~/utils/sendEmail'
 
 const register = async (req: Request, res: Response) => {
   try {
     const result = await authService.register(req.body)
 
     res.status(StatusCodes.CREATED).json(result)
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).json(error)
+  }
+}
+
+const sendVerificationCode = async (req: Request, res: Response) => {
+  try {
+    sendEmail({
+      to: req.body.email,
+      subject: 'Verification Code',
+      verificationCode: req.body.pin
+    })
+
+    res.status(StatusCodes.OK).json({ message: 'Verification code sent successfully' })
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(error)
   }
@@ -37,4 +52,4 @@ const logout = async (req: Request, res: Response) => {
   }
 }
 
-export const authController = { register, login, logout }
+export const authController = { register, sendVerificationCode, login, logout }

@@ -11,6 +11,13 @@ export const RegisterBody = z
   })
   .strict()
 
+export const OTPBody = z
+  .object({
+    email: z.string().trim().email(),
+    pin: z.string().trim().min(6).max(6)
+  })
+  .strict()
+
 export const LoginBody = z
   .object({
     email: z.string().trim().email(),
