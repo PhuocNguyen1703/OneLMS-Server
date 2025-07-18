@@ -9,17 +9,30 @@ export class EntityError extends Error {
   }
 }
 
-export class AuthError extends Error {
-  status = StatusCodes.UNAUTHORIZED
+export class NotfoundError extends Error {
+  status = StatusCodes.NOT_FOUND
+  message: string
   constructor(message: string) {
     super(message)
+    this.message = message
+  }
+}
+
+export class AuthError extends Error {
+  status = StatusCodes.UNAUTHORIZED
+  message: string
+  constructor(message: string) {
+    super(message)
+    this.message = message
   }
 }
 
 export class ForbiddenError extends Error {
   status = StatusCodes.FORBIDDEN
+  message: string
   constructor(message: string) {
     super(message)
+    this.message = message
   }
 }
 
@@ -31,4 +44,4 @@ export class CustomError extends Error {
   }
 }
 
-export const errorTypes = [EntityError, AuthError, ForbiddenError, CustomError]
+export const errorTypes = [EntityError, NotfoundError, AuthError, ForbiddenError, CustomError]

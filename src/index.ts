@@ -22,7 +22,7 @@ const startServer = () => {
   app.use(express.urlencoded({ extended: true }))
 
   //Routes
-  app.use('/auth', authRoute)
+  app.use('/api/auth', authRoute)
 
   app.listen(envConfig.PORT || 5000, () => {
     console.log(`Server is running at port ${envConfig.PORT}`)

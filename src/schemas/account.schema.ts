@@ -18,15 +18,13 @@ export const accountSchema = z.object({
     })
     .nullable()
     .default(null),
-  verify: z
-    .object({
-      status: z.boolean().default(false),
-      code: z.number().nullable().default(null),
-      expired: z.date().nullable().default(null)
-    })
-    .default({ status: false, code: null, expired: null }),
+  isActive: z.boolean().default(false),
+  verification_code: z.string().optional(),
+  verification_code_exp: z.number().optional(),
+  reset_password_token: z.string().optional(),
+  reset_password_token_exp: z.number().optional(),
   last_login: z.number().nullable().default(null),
-  createdAt: z.number(),
+  createdAt: z.number().default(Date.now()),
   updatedAt: z.number().nullable().default(null),
-  _destroy: z.boolean().default(false)
+  _isDeleted: z.boolean().default(false)
 })

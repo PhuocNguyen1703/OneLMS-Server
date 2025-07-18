@@ -20,8 +20,8 @@ const configSchema = z.object({
   MONGO_DB: z.string(),
   JWT_SECRET_KEY_ACCESS: z.string(),
   JWT_SECRET_KEY_REFRESH: z.string(),
-  EMAIL_USER: z.string(),
-  EMAIL_PASS: z.string()
+  RESEND_API_KEY: z.string(),
+  LOGO_URL: z.string()
 })
 
 const configServer = configSchema.safeParse(process.env)

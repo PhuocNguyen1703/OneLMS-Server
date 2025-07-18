@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
 import { authService } from '../services/auth/auth.service'
 import { StatusCodes } from 'http-status-codes'
-import { errorTypes } from '~/utils/errors'
-import { sendEmail } from '~/utils/sendEmail'
+import { handleControllerError } from '~/utils/handleControllerError'
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -10,21 +9,7 @@ const register = async (req: Request, res: Response) => {
 
     res.status(StatusCodes.CREATED).json(result)
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json(error)
-  }
-}
-
-const sendVerificationCode = async (req: Request, res: Response) => {
-  try {
-    sendEmail({
-      to: req.body.email,
-      subject: 'Verification Code',
-      verificationCode: req.body.pin
-    })
-
-    res.status(StatusCodes.OK).json({ message: 'Verification code sent successfully' })
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json(error)
+    handleControllerError(res, error)
   }
 }
 
@@ -34,12 +19,37 @@ const login = async (req: Request, res: Response) => {
 
     res.status(StatusCodes.OK).json(result)
   } catch (error) {
-    if (errorTypes.some((type) => error instanceof type)) {
-      const customError = error as { status: number; message: string }
-      res.status(customError.status).json({ errors: { message: customError.message, error } })
-    } else {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ errors: { message: 'Internal server error.', error } })
-    }
+    handleControllerError(res, error)
+  }
+}
+
+const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.verifyEmail(req)
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    handleControllerError(res, error)
+  }
+}
+
+const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.forgotPassword(req.body)
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    handleControllerError(res, error)
+  }
+}
+
+const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.resetPassword(req)
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    handleControllerError(res, error)
   }
 }
 
@@ -48,8 +58,8 @@ const logout = async (req: Request, res: Response) => {
     const result = await authService.logout(req, res)
     return result
   } catch (error) {
-    console.log(error)
+    handleControllerError(res, error)
   }
 }
 
-export const authController = { register, sendVerificationCode, login, logout }
+export const authController = { register, login, verifyEmail, forgotPassword, resetPassword, logout }

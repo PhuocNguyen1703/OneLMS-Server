@@ -2,13 +2,16 @@ import express from 'express'
 import { authController } from '~/controllers/auth.controller'
 import { validateData } from '~/middleware/validation'
 import { authMiddleware } from '~/middleware/verifyToken'
-import { LoginBody, OTPBody, RegisterBody } from '~/schemas/auth.schema'
+import { ForgotPasswordBody, LoginBody, OTPBody, RegisterBody, ResetPasswordBody } from '~/schemas/auth.schema'
 
 const router = express.Router()
 
 router.post('/register', validateData(RegisterBody), authController.register)
-router.post('/otp-verification', validateData(OTPBody), authController.sendVerificationCode)
 router.post('/login', validateData(LoginBody), authController.login)
 router.post('/logout', authMiddleware.verifyToken, authController.logout)
+
+router.post('/verify-email/:id', validateData(OTPBody), authController.verifyEmail)
+router.post('/forgot-password', validateData(ForgotPasswordBody), authController.forgotPassword)
+router.post('/reset-password/:token', validateData(ResetPasswordBody), authController.resetPassword)
 
 export default router

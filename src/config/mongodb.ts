@@ -2,7 +2,7 @@ import { Db, MongoClient } from 'mongodb'
 import envConfig from './envConfig'
 
 let dbInstance: Db
-const DB_NAME = 'OneLMS_DB'
+const DB_NAME = 'OnePlus_DB'
 
 export const connectDB = async () => {
   const client = new MongoClient(envConfig.MONGO_DB)
